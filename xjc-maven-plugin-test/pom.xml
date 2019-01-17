@@ -96,6 +96,13 @@
                             <goal>xjc</goal>
                         </goals>
                         <configuration>
+                            <dependencies>
+                                <dependency>
+                                    <groupId>com.github.davidmoten</groupId>
+                                    <artifactId>kool</artifactId>
+                                    <version>0.1.2</version>
+                                </dependency>
+                            </dependencies>
                             <systemProperties>
                                 <enableExternalEntityProcessing>true</enableExternalEntityProcessing>
                             </systemProperties>

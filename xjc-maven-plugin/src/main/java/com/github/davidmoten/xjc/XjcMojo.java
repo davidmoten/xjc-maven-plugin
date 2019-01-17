@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -49,6 +50,9 @@ public final class XjcMojo extends AbstractMojo {
     @Parameter(defaultValue = "${remoteArtifactRepositories}", readonly = true, required = true)
     private List<ArtifactRepository> remoteRepositories;
 
+    @Parameter(name = "dependencies")
+    private List<Dependency> dependencies;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         Log log = getLog();
@@ -85,23 +89,39 @@ public final class XjcMojo extends AbstractMojo {
         //
         ////////////////////////////////////////////////////////
 
-        Artifact artifact = repositorySystem.createArtifact( //
-                "org.glassfish.jaxb", "jaxb-xjc", jaxbVersion, "", "jar");
-
         log.info("setting up classpath for jaxb-xjc version " + jaxbVersion);
 
-        ArtifactResolutionResult r = resolve(artifact);
+        List<Artifact> artifacts = Lists.newArrayList();
+        Artifact xjcArtifact = repositorySystem.createArtifact( //
+                "org.glassfish.jaxb", "jaxb-xjc", jaxbVersion, "", "jar");
+        artifacts.add(xjcArtifact);
+        if (dependencies != null) {
+            for (Dependency dep : dependencies) {
+                artifacts.add( //
+                        repositorySystem.createArtifact( //
+                                dep.getGroupId(), //
+                                dep.getArtifactId(), //
+                                dep.getVersion(), //
+                                dep.getType()));
+            }
+        }
 
-        Stream<String> artifactEntry = Stream.of(artifact.getFile().getAbsolutePath());
-
-        Stream<String> dependencyEntries = r.getArtifactResolutionNodes() //
-                .stream() //
-                .map(x -> x.getArtifact().getFile().getAbsolutePath());
+        Stream<String> dependencyEntries = Stream.concat( //
+                artifacts //
+                        .stream() //
+                        .flatMap(artifact -> resolve(artifact) //
+                                .getArtifactResolutionNodes() //
+                                .stream() //
+                                .map(x -> x.getArtifact().getFile().getAbsolutePath())), //
+                artifacts //
+                        .stream() //
+                        .filter(x -> x.getFile() != null) //
+                        .map(x -> x.getFile().getAbsolutePath()) //
+        );
 
         StringBuilder classpath = new StringBuilder();
         classpath.append( //
-                Stream.concat(artifactEntry, dependencyEntries) //
-                        .collect(Collectors.joining(File.pathSeparator)));
+                dependencyEntries.collect(Collectors.joining(File.pathSeparator)));
 
         ////////////////////////////////////////////////////////
         //
