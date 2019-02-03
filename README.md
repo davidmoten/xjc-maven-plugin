@@ -2,6 +2,8 @@
 <a href="https://travis-ci.org/davidmoten/xjc-maven-plugin"><img src="https://travis-ci.org/davidmoten/xjc-maven-plugin.svg"/></a><br/>
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.davidmoten/xjc-maven-plugin/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/com.github.davidmoten/xjc-maven-plugin)
 
+NOTE: This plugin has been migrated to more generic [jax-maven-plugin](https://github.com/davidmoten/jax-maven-plugin)
+
 The `xjc` executable is not present in the JDK as of version 11. However, the functionality of `xjc` is still available (right down to the command line arguments to that original executable) via external artifacts like *org.glassfish.jaxb:jaxb-xjc*.
 
 *xjc-maven-plugin* sets up the classpath dependencies and passes the arguments you provide directly through to the `com.sun.tools.xjc.Driver.run` method.
@@ -9,8 +11,6 @@ The `xjc` executable is not present in the JDK as of version 11. However, the fu
 The development of this plugin was motivated by [problems](https://github.com/mojohaus/jaxb2-maven-plugin/issues/43) with the *jaxb2-maven-plugin* with Java 9+. My company's codebase used *jaxb2-maven-plugin* in ~10 locations (always the `xjc` goal) and we wanted to move to OpenJDK 11+ given the EOL (unpaid) for Oracle Java 8 in January 2019.
 
 Status: *deployed to Maven Central*
-
-NOTE: This plugin has been migrated to more generic [jax-maven-plugin](https://github.com/davidmoten/jax-maven-plugin)
 
 ## Features
 * Supports Java 8, 9, 10, 11+, gener:ates code from DTD or XSD
