@@ -10,8 +10,10 @@ The development of this plugin was motivated by [problems](https://github.com/mo
 
 Status: *deployed to Maven Central*
 
+NOTE: This plugin has been migrated to more generic [jax-maven-plugin](https://github.com/davidmoten/jax-maven-plugin)
+
 ## Features
-* Supports Java 8, 9, 10, 11+, generates code from DTD or XSD
+* Supports Java 8, 9, 10, 11+, gener:ates code from DTD or XSD
 * detects the `-d` destination directoy and auto-creates directory if does not exist
 * sets system properties
 * supports JAXB extensions
